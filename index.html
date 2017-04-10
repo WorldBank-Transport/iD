@@ -24,27 +24,27 @@
         }
 
         function notifier (id, element) {
-          var events = {};
+            var events = {};
 
-          var _notifier = {
-            on: function (type, cb) {
-              if (!events[type]) events[type] = [];
-              events[type].push(cb);
-              return _notifier;
-            },
-            send: function (type, data) {
-              data = data || {};
-              data.id = id;
-              data.type = type;
-              element.postMessage(data, '*');
-              return _notifier;
-            }
-          };
+            var _notifier = {
+                on: function (type, cb) {
+                    if (!events[type]) events[type] = [];
+                    events[type].push(cb);
+                    return _notifier;
+                },
+                send: function (type, data) {
+                    data = data || {};
+                    data.id = id;
+                    data.type = type;
+                    element.postMessage(data, '*');
+                    return _notifier;
+                }
+            };
 
           window.addEventListener('message', e => {
-            if (!e.data.type) return;
-            var cbs = events[e.data.type] || [];
-            cbs.forEach(function (cb) { cb(e.data); });
+              if (!e.data.type) return;
+              var cbs = events[e.data.type] || [];
+              cbs.forEach(function (cb) { cb(e.data); });
           });
 
           return _notifier;
@@ -63,7 +63,6 @@
                     n.send('ready');
                 });
         }
-
 
         </script>
     </body>
