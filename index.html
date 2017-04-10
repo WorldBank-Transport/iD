@@ -24,40 +24,43 @@
         }
 
         function notifier (id, element) {
-          let events = {};
+          var events = {};
 
-          let _notifier = {
-            on: (type, cb) => {
+          var _notifier = {
+            on: function (type, cb) {
               if (!events[type]) events[type] = [];
               events[type].push(cb);
               return _notifier;
             },
-            send: (type, data = {}) => {
-              let msg = Object.assign({}, { id: id, type: type }, data);
-              element.postMessage(msg, '*');
+            send: function (type, data) {
+              data = data || {};
+              data.id = id;
+              data.type = type;
+              element.postMessage(data, '*');
               return _notifier;
             }
           };
 
           window.addEventListener('message', e => {
             if (!e.data.type) return;
-            let cbs = events[e.data.type] || [];
-            cbs.forEach(cb => cb(e));
+            var cbs = events[e.data.type] || [];
+            cbs.forEach(function (cb) { cb(e.data); });
           });
 
           return _notifier;
         }
 
         if (window === window.parent) {
-            // alert('Not inside an iframe. Prompt for ids');
-            // projId = parseInt(prompt('Insert project id'), 10);
-            // scId = parseInt(prompt('Insert scenario id'), 10);
-            start({projectId: 2000, scenarioId: 2000});
+            alert('Not inside an iframe. Prompt for ids');
+            var projId = parseInt(prompt('Insert project id'), 10);
+            var scId = parseInt(prompt('Insert scenario id'), 10);
+            start({projectId: projId, scenarioId: scId});
         } else {
-            notifier('rra-editor', window.parent)
+            var n = notifier('rra-editor', window.parent)
                 .send('loaded')
-                .on('settings', data => {
+                .on('settings', function (data) {
                     start({projectId: data.projectId, scenarioId: data.scenarioId});
+                    n.send('ready');
                 });
         }
 
