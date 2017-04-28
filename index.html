@@ -16,7 +16,7 @@
         function start(opts) {
             // Switch service.
             iD.services.osm = iD.services.osmRRA;
-            id = iD.Context().assetPath('dist/');
+            id = iD.Context().assetPath('dist/').notifier(opts.notifier);
             // Set vars.
             id.connection().projectId(opts.projectId).scenarioId(opts.scenarioId);
 
@@ -59,7 +59,7 @@
             var n = notifier('rra-editor', window.parent)
                 .send('loaded')
                 .on('settings', function (data) {
-                    start({projectId: data.projectId, scenarioId: data.scenarioId});
+                    start({projectId: data.projectId, scenarioId: data.scenarioId, notifier: n});
                     n.send('ready');
                 });
         }
