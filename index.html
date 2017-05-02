@@ -60,7 +60,8 @@
                 .send('loaded')
                 .on('settings', function (data) {
                     start({projectId: data.projectId, scenarioId: data.scenarioId, notifier: n});
-                    n.send('ready');
+                    var clientB = document.getElementById('content').getBoundingClientRect();
+                    n.send('ready', {mapWidth: clientB.width, mapHeight: clientB.height});
                 });
         }
 
