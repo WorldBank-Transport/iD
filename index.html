@@ -16,11 +16,14 @@
         function start(opts) {
             // Switch service.
             iD.services.osm = iD.services.osmRRA;
-            id = iD.Context().assetPath('dist/').notifier(opts.notifier);
+            id = iD.Context();
+            id.assetPath('dist/').notifier(opts.notifier);
             // Set vars.
             id.connection().projectId(opts.projectId).scenarioId(opts.scenarioId);
 
             id.ui()(document.getElementById('id-container'));
+
+            return id;
         }
 
         function notifier (id, element) {
@@ -59,9 +62,13 @@
             var n = notifier('rra-editor', window.parent)
                 .send('loaded')
                 .on('settings', function (data) {
-                    start({projectId: data.projectId, scenarioId: data.scenarioId, notifier: n});
-                    var clientB = document.getElementById('content').getBoundingClientRect();
-                    n.send('ready', {mapWidth: clientB.width, mapHeight: clientB.height});
+                    var id = start({projectId: data.projectId, scenarioId: data.scenarioId, notifier: n});
+                    // Center map on the appropriate place.
+                    id.map().extent([
+                        [ data.bbox[0], data.bbox[1] ],
+                        [ data.bbox[2], data.bbox[3] ]
+                    ]);
+                    n.send('ready');
                 });
         }
 
