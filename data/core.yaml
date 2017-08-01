@@ -253,7 +253,7 @@ en:
     readonly: The API is read-only. You will need to wait to save your changes.
     rateLimit: The API is limiting anonymous connections.  You can fix this by logging in.
   commit:
-    title: Upload to OpenStreetMap
+    title: Upload to Rural Accessibility Map
     description_placeholder: Brief description of your contributions (required)
     message_label: Changeset Comment
     upload_explanation: "The changes you upload will be visible on all maps that use OpenStreetMap data."
@@ -449,7 +449,7 @@ en:
     error: Errors occurred while trying to save
     status_code: "Server returned status code {code}"
     unknown_error_details: "Please ensure you are connected to the internet."
-    uploading: Uploading changes to OpenStreetMap...
+    uploading: Uploading changes to Rural Accessibility Map...
     unsaved_changes: You have unsaved changes
     conflict:
       header: Resolve conflicting edits
@@ -475,12 +475,12 @@ en:
       tags: 'You changed the <b>{tag}</b> tag to "{local}" and {user} changed it to "{remote}".'
   success:
     edited_osm: "Edited OSM!"
-    just_edited: "You just edited OpenStreetMap!"
+    just_edited: "You just edited Rural Accessibility Map!"
     view_on_osm: "View on OSM"
     facebook: "Share on Facebook"
     twitter: "Share on Twitter"
     google: "Share on Google+"
-    help_html: Your changes should appear in the "Standard" layer in a few minutes. Other layers, and certain features, may take longer.
+    help_html: Your changes have been saved to the Rural Accessibility Map.
     help_link_text: Details
     help_link_url: "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
   confirm:
