@@ -100,7 +100,7 @@ export function utilDetect(force) {
     setTextDirection(detected.textDirection);
 
     // detect host
-    var loc = window.top.location;
+    var loc = window.location;
     var origin = loc.origin;
     if (!origin) {  // for unpatched IE11
         origin = loc.protocol + '//' + loc.hostname + (loc.port ? ':' + loc.port: '');
