@@ -29,7 +29,7 @@ export function uiSave(context) {
 
 
     function notify(enabled) {
-        notifier.send('save:status', {enabled});
+        notifier.send('save:status', {enabled: enabled});
     }
 
 
