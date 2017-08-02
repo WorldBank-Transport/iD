@@ -6,10 +6,12 @@ import { svgIcon } from '../svg/index';
 import { uiCmd } from './cmd';
 import { uiTooltipHtml } from './tooltipHtml';
 import { tooltip } from '../util/tooltip';
+import _ from 'lodash';
 
 
 export function uiSave(context) {
     var history = context.history(),
+        notifier = context.notifier(),
         key = uiCmd('⌘S');
 
 
@@ -19,10 +21,15 @@ export function uiSave(context) {
 
 
     function save() {
-        d3.event.preventDefault();
+        if (d3.event) d3.event.preventDefault();
         if (!context.inIntro() && !saving() && history.hasChanges()) {
             context.enter(modeSave(context));
         }
+    }
+
+
+    function notify(enabled) {
+        notifier.send('save:status', {enabled: enabled});
     }
 
 
@@ -40,7 +47,37 @@ export function uiSave(context) {
     }
 
 
-    return function(selection) {
+    function externalButton() {
+        var numChanges = 0;
+        var notifyDebounced = _.debounce(notify, 100);
+
+        function updateCount() {
+            var _ = history.difference().summary().length;
+            if (_ === numChanges) return;
+            numChanges = _;
+
+            notifyDebounced(numChanges > 0 && !saving());
+        }
+
+        context.history()
+            .on('change.save', updateCount);
+
+        context
+            .on('enter.save', function() {
+                notifyDebounced(numChanges > 0 && !saving());
+            });
+
+        var keybinding = d3keybinding('save')
+            .on(key, save, true);
+
+        d3.select(document)
+            .call(keybinding);
+
+        notifier.on('save:click', save);
+    }
+
+
+    function uiButton(selection) {
         var numChanges = 0;
 
         function updateCount() {
@@ -107,5 +144,7 @@ export function uiSave(context) {
                 button.property('disabled', saving());
                 if (saving()) button.call(tooltipBehavior.hide);
             });
-    };
+    }
+
+    return notifier ? externalButton : uiButton;
 }

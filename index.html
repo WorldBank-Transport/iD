@@ -13,29 +13,67 @@
         <div id='id-container'></div>
         <script>
 
-        id = iD.Context()
-            .assetPath('dist/');
+        function start(opts) {
+            // Switch service.
+            iD.services.osm = iD.services.osmRRA;
+            id = iD.Context();
+            id.assetPath('dist/').notifier(opts.notifier);
+            // Set vars.
+            id.connection()
+                .apiUrl('http://localhost:4000')
+                .projectId(opts.projectId)
+                .scenarioId(opts.scenarioId);
 
-        id.ui()(document.getElementById('id-container'), function() {
-            iD.d3.select('#about-list')
-                .insert('li', '.user-list')
-                .attr('class', 'source-switch')
-                .call(iD.uiSourceSwitch(id)
-                    .keys([
-                        {
-                            'urlroot': 'https://www.openstreetmap.org',
-                            'oauth_consumer_key': '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
-                            'oauth_secret': 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL'
-                        },
-                        {
-                            'urlroot': 'https://api06.dev.openstreetmap.org',
-                            'oauth_consumer_key': 'zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R',
-                            'oauth_secret': 'aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p'
-                        }
-                    ])
-                );
-        });
+            id.ui()(document.getElementById('id-container'));
 
+            return id;
+        }
+
+        function notifier (id, element) {
+            var events = {};
+
+            var _notifier = {
+                on: function (type, cb) {
+                    if (!events[type]) events[type] = [];
+                    events[type].push(cb);
+                    return _notifier;
+                },
+                send: function (type, data) {
+                    data = data || {};
+                    data.id = id;
+                    data.type = type;
+                    element.postMessage(data, '*');
+                    return _notifier;
+                }
+            };
+
+          window.addEventListener('message', e => {
+              if (!e.data.type) return;
+              var cbs = events[e.data.type] || [];
+              cbs.forEach(function (cb) { cb(e.data); });
+          });
+
+          return _notifier;
+        }
+
+        if (window === window.parent) {
+            alert('Not inside an iframe. Prompt for ids');
+            var projId = parseInt(prompt('Insert project id'), 10);
+            var scId = parseInt(prompt('Insert scenario id'), 10);
+            start({projectId: projId, scenarioId: scId});
+        } else {
+            var n = notifier('rra-editor', window.parent)
+                .send('loaded')
+                .on('settings', function (data) {
+                    var id = start({projectId: data.projectId, scenarioId: data.scenarioId, notifier: n});
+                    // Center map on the appropriate place.
+                    id.map().extent([
+                        [ data.bbox[0], data.bbox[1] ],
+                        [ data.bbox[2], data.bbox[3] ]
+                    ]);
+                    n.send('ready');
+                });
+        }
         </script>
     </body>
 </html>

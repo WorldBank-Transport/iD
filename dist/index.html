@@ -32,14 +32,75 @@
             var b=document.getElementsByTagName('script')[0];
             a.src=document.location.protocol+'//dnn506yrbagrg.cloudfront.net/pages/scripts/0013/6714.js?'+Math.floor(new Date().getTime()/3600000);
             a.async=true;a.type='text/javascript';b.parentNode.insertBefore(a,b)}, 1);
+        </script>
+        <script>
 
-            if (typeof iD == 'undefined' || !iD.Detect().support) {
-                document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported. Please use Potlatch 2 to edit the map.';
-                document.getElementById('id-container').className = 'unsupported';
+        function start(opts) {
+            // Switch service.
+            iD.services.osm = iD.services.osmRRA;
+            id = iD.Context();
+            id.assetPath('dist/').notifier(opts.notifier);
+            // Set vars.
+            id.connection()
+                .apiUrl('http://api.ruralacess.info')
+                .projectId(opts.projectId)
+                .scenarioId(opts.scenarioId);
+
+            id.ui()(document.getElementById('id-container'));
+
+            return id;
+        }
+
+        function notifier (id, element) {
+            var events = {};
+
+            var _notifier = {
+                on: function (type, cb) {
+                    if (!events[type]) events[type] = [];
+                    events[type].push(cb);
+                    return _notifier;
+                },
+                send: function (type, data) {
+                    data = data || {};
+                    data.id = id;
+                    data.type = type;
+                    element.postMessage(data, '*');
+                    return _notifier;
+                }
+            };
+
+          window.addEventListener('message', e => {
+              if (!e.data.type) return;
+              var cbs = events[e.data.type] || [];
+              cbs.forEach(function (cb) { cb(e.data); });
+          });
+
+          return _notifier;
+        }
+
+        if (typeof iD == 'undefined' || !iD.Detect().support) {
+            document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported. Please use Potlatch 2 to edit the map.';
+            document.getElementById('id-container').className = 'unsupported';
+        } else {
+            if (window === window.parent) {
+                alert('Not inside an iframe. Prompt for ids');
+                var projId = parseInt(prompt('Insert project id'), 10);
+                var scId = parseInt(prompt('Insert scenario id'), 10);
+                start({projectId: projId, scenarioId: scId});
             } else {
-                var id = iD.Context();
-                id.ui()(document.getElementById('id-container'));
+                var n = notifier('rra-editor', window.parent)
+                    .send('loaded')
+                    .on('settings', function (data) {
+                        var id = start({projectId: data.projectId, scenarioId: data.scenarioId, notifier: n});
+                        // Center map on the appropriate place.
+                        id.map().extent([
+                            [ data.bbox[0], data.bbox[1] ],
+                            [ data.bbox[2], data.bbox[3] ]
+                        ]);
+                        n.send('ready');
+                    });
             }
+        }
         </script>
     </body>
 </html>

@@ -301,6 +301,15 @@ export function coreContext() {
     };
 
 
+    /* Notifier */
+    var notifier = null;
+    context.notifier = function(_) {
+        if (!arguments.length) return notifier;
+        notifier = _;
+        return context;
+    };
+
+
     /* Assets */
     var assetPath = '';
     context.assetPath = function(_) {

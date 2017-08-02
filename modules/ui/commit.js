@@ -168,10 +168,10 @@ export function uiCommit(context) {
             .append('div')
             .attr('class','modal-section save-section fillL cf');
 
-        var prose = saveSection
-            .append('p')
-            .attr('class', 'commit-info')
-            .html(t('commit.upload_explanation'));
+        // var prose = saveSection
+        //     .append('p')
+        //     .attr('class', 'commit-info')
+        //     .html(t('commit.upload_explanation'));
 
 
         context.connection().userDetails(function(err, user) {
@@ -194,8 +194,8 @@ export function uiCommit(context) {
                 .attr('tabindex', -1)
                 .attr('target', '_blank');
 
-            prose
-                .html(t('commit.upload_explanation_with_user', { user: userLink.html() }));
+            // prose
+            //     .html(t('commit.upload_explanation_with_user', { user: userLink.html() }));
         });
 
 
