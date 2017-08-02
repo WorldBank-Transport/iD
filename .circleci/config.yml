@@ -3,6 +3,13 @@ jobs:
   build:
     docker:
       - image: node:7
+        environment:
+          - DEPLOY_BRANCH=master
+          - STAGING_BRANCH=develop
+          - DOCKER_SRC_IMAGE=ram-id
+          - DOCKER_REPOSITORY=wbtransport/ram-id
+          - DOCKER_USERNAME=danielfdsilva
+          # DOCKER_PASSWD = Set through the interface
 
     working_directory: ~/repo
 
@@ -26,7 +33,7 @@ jobs:
       - run:
           name: Building site
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ "${CIRCLE_BRANCH}" == "${DEPLOY_BRANCH}" ]; then
               npm run all
             else
               echo "Skip building site"
@@ -36,10 +43,25 @@ jobs:
           fingerprints:
             - "e0:8c:34:e7:1a:c5:13:b6:fc:b6:25:a0:cc:10:98:49"
 
+      - setup_remote_docker
+
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+
+      - run:
+          name: Deploy to Docker hub
+          command: /bin/bash ./.circleci/deploy-docker.sh
+
       - run:
           name: Deploy to GH Pages
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ "${CIRCLE_BRANCH}" == "${DEPLOY_BRANCH}" ]; then
               cd dist
               git init
               git config user.name "Devseed-CI"
