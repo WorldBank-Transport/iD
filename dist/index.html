@@ -41,7 +41,10 @@
             id = iD.Context();
             id.assetPath('dist/').notifier(opts.notifier);
             // Set vars.
-            id.connection().projectId(opts.projectId).scenarioId(opts.scenarioId);
+            id.connection()
+                .apiUrl('http://localhost:4000')
+                .projectId(opts.projectId)
+                .scenarioId(opts.scenarioId);
 
             id.ui()(document.getElementById('id-container'));
 

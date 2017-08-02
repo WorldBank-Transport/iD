@@ -57,10 +57,12 @@ function getTags(obj) {
     return tags;
 }
 
+// Api url.
+var apiUrl = '';
 // Ids to construct the url.
 var projectId, scenarioId;
 function getBaseUrl() {
-    return 'http://localhost:4000/projects/' + projectId + '/scenarios/' + scenarioId + '/osm';
+    return apiUrl + '/projects/' + projectId + '/scenarios/' + scenarioId + '/osm';
 }
 
 
@@ -462,6 +464,13 @@ export default {
     scenarioId: function(_) {
         if (!arguments.length) return scenarioId;
         scenarioId = _;
+        return this;
+    },
+
+    /* Api url */
+    apiUrl: function(_) {
+        if (!arguments.length) return apiUrl;
+        apiUrl = _;
         return this;
     },
 
