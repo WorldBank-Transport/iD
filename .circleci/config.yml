@@ -40,7 +40,7 @@ jobs:
           name: Deploy to GH Pages
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              cd build
+              cd dist
               git init
               git config user.name "Devseed-CI"
               git config user.email "dev@developmentseed.org"
