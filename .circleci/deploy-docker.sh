@@ -11,6 +11,11 @@ else
   exit 0;
 fi
 
+# For the offline version we need to replace the api url in dist/index.html
+API="http://api.ruralaccess.info"
+OFFLINE_API="http://localhost:4000"
+sed -i "s|${API}|${OFFLINE_API}|" dist/index.html
+
 echo "Building source image"
 docker build -t $DOCKER_SRC_IMAGE .
 
