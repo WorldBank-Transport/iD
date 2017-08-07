@@ -39,7 +39,7 @@
             // Switch service.
             iD.services.osm = iD.services.osmRRA;
             id = iD.Context();
-            id.assetPath('dist/').notifier(opts.notifier);
+            id.notifier(opts.notifier);
             // Set vars.
             id.connection()
                 .apiUrl('http://api.ruralaccess.info')
