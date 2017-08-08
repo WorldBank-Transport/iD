@@ -55,10 +55,6 @@ jobs:
             mv /tmp/docker/* /usr/bin
 
       - run:
-          name: Deploy to Docker hub
-          command: /bin/bash ./.circleci/deploy-docker.sh
-
-      - run:
           name: Deploy to GH Pages
           command: |
             if [ "${CIRCLE_BRANCH}" == "${DEPLOY_BRANCH}" ]; then
@@ -75,3 +71,7 @@ jobs:
             else
               echo "Skip deploying to Github"
             fi
+
+      - run:
+          name: Deploy to Docker hub
+          command: /bin/bash ./.circleci/deploy-docker.sh
