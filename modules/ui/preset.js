@@ -105,6 +105,10 @@ export function uiPreset(context) {
 
             fieldsArr = [];
 
+            if (geometry === 'point' && presets.field('ram_poi_type')) {
+                fieldsArr.push(UIField(presets.field('ram_poi_type'), entity, true));
+            }
+
             if (presets.field('name')) {
                 fieldsArr.push(UIField(presets.field('name'), entity));
             }

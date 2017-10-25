@@ -1004,6 +1004,9 @@ en:
       railway:
         # railway=*
         label: Type
+      ram_poi_type:
+        # ram_poi_type=*
+        label: RAM POI type
       recycling_accepts:
         # 'recycling:=*'
         label: Accepts

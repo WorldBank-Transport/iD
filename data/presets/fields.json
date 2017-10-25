@@ -1338,6 +1338,13 @@
             "type": "typeCombo",
             "label": "Type"
         },
+        "ram_poi_type": {
+            "key": "ram_poi_type",
+            "type": "text",
+            "universal": true,
+            "label": "RAM POI type",
+            "geometry": "point"
+        },
         "recycling_accepts": {
             "key": "recycling:",
             "type": "multiCombo",
