@@ -1,0 +1,7 @@
+{
+    "key": "ram_poi_type",
+    "type": "text",
+    "universal": true,
+    "label": "RAM POI type",
+    "geometry": "point"
+}
