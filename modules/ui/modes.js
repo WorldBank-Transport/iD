@@ -15,7 +15,7 @@ import { uiTooltipHtml } from './tooltipHtml';
 
 export function uiModes(context) {
     var modes = [
-        // modeAddPoint(context),
+        modeAddPoint(context),
         modeAddLine(context)
         // modeAddArea(context)
     ];
